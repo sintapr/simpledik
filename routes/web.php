@@ -32,7 +32,10 @@ use App\Http\Controllers\DetailNilaiTarbiyahController;
 
 
 
-
+// =================== ROOT REDIRECT ===================
+Route::get('/', function () {
+    return redirect('/login');
+});
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
