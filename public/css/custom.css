@@ -1,0 +1,389 @@
+/* public/css/custom.css */
+
+:root {
+    --warna-primer: #0aaa2d;
+    --warna-tersier: #0aaa2d;
+    --warna-putih: #fff;
+}
+
+/* Sidebar */
+/* Ini memaksa semua lapisan sidebar pakai warna primer */
+.nk-sidebar,
+.nk-sidebar .nk-nav-scroll,
+.nk-sidebar .nk-nav-scroll > ul {
+    background-color: var(--warna-primer) !important;
+}
+
+/* Sidebar kiri benar-benar full warna primer */
+.nk-sidebar,
+.nk-sidebar .metismenu,
+.nk-sidebar .metismenu li,
+.nk-sidebar .metismenu li > a {
+    background-color: var(--warna-primer) !important;
+    color: var(--warna-putih) !important;
+}
+
+/* Hover & aktif juga ditegaskan */
+.nk-sidebar .metismenu a:hover,
+.nk-sidebar .metismenu li.active > a {
+    background-color: var(--warna-tersier) !important;
+    color: var(--warna-putih) !important;
+}
+
+
+body::after {
+    content: "CSS AKTIF";
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: red;
+    color: white;
+    padding: 5px 10px;
+    font-size: 12px;
+    z-index: 9999;
+}
+
+
+/* Link di sidebar */
+.nk-sidebar .metismenu a {
+    color: var(--warna-putih) !important;
+}
+
+/* Link aktif atau hover */
+.nk-sidebar .metismenu a:hover,
+.nk-sidebar .metismenu li.active > a {
+    background-color: var(--warna-tersier) !important;
+    color: var(--warna-putih) !important;
+}
+
+/* Navbar background */
+.nav-header {
+    background-color: var(--warna-primer) !important;
+}
+
+/* Button (jika perlu) */
+.btn-primary {
+    background-color: var(--warna-primer) !important;
+    border-color: var(--warna-primer) !important;
+}
+
+/* Custom CSS untuk tema hijau */
+        .gradient-green-1 {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        .gradient-green-2 {
+            background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
+        }
+        .gradient-green-3 {
+            background: linear-gradient(135deg, #27ae60 0%, #2980b9 100%);
+        }
+        .gradient-green-4 {
+            background: linear-gradient(135deg, #1abc9c 0%, #3498db 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .welcome-card {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-left: 5px solid #2ecc71;
+        }
+        .info-icon {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .progress-custom {
+            height: 8px;
+            border-radius: 10px;
+        }
+        .badge-green {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        .stat-card {
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+
+    /* Navbar Green Theme */
+    .nav-header {
+        background: linear-gradient(135deg, #0aaa2d 0%, #0aaa2d 100%);
+        border-bottom: 2px solid #66bb6a;
+        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.2);
+    }
+    
+    .brand-logo a {
+        color: #ffffff !important;
+        text-decoration: none;
+    }
+    
+    .brand-title {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        font-size: 18px !important;
+        letter-spacing: 1px;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Header styling */
+    .header {
+        background: #ffffff;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid #e8f5e9;
+    }
+    
+    .header-content {
+        padding: 0 20px;
+    }
+    
+    /* Hamburger menu */
+    .nav-control .hamburger {
+        background: transparent;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-control .hamburger:hover {
+        background: #f1f8e9;
+    }
+    
+    .toggle-icon i {
+        color: #2e7d32;
+        font-size: 18px;
+    }
+    
+    /* Header right section */
+    .header-right {
+        padding: 10px 0;
+    }
+    
+    /* Notification dropdown */
+    .icons.dropdown {
+        position: relative;
+        margin-right: 15px;
+    }
+    
+    .icons.dropdown .dropdown-toggle {
+        background: #f1f8e9;
+        border: 1px solid #c8e6c9;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2e7d32;
+        transition: all 0.3s ease;
+    }
+    
+    .icons.dropdown .dropdown-toggle:hover {
+        background: #e8f5e9;
+        border-color: #4caf50;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+    }
+    
+    /* User profile section */
+    .user-img {
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .user-img:hover {
+        transform: translateY(-2px);
+    }
+    
+    .user-img img {
+        border: 3px solid #4caf50;
+        box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .user-img:hover img {
+        border-color: #2e7d32;
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
+    }
+    
+    /* Activity indicator */
+    .activity.active {
+        background: #4caf50;
+        border: 2px solid #ffffff;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Dropdown profile */
+    .dropdown-profile {
+        background: #ffffff;
+        border: 1px solid #c8e6c9;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.15);
+        min-width: 280px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+    
+    .dropdown-content-body {
+        padding: 0;
+    }
+    
+    /* Profile header in dropdown */
+    .dropdown-profile .d-flex.align-items-center {
+        background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+        padding: 20px !important;
+        border-bottom: 1px solid #c8e6c9 !important;
+    }
+    
+    .dropdown-profile .d-flex img {
+        border: 2px solid #4caf50;
+        margin-right: 15px !important;
+    }
+    
+    .dropdown-profile h5 {
+        color: #1b5e20 !important;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 4px !important;
+    }
+    
+    .dropdown-profile small {
+        color: #2e7d32 !important;
+        font-weight: 500;
+        font-size: 12px;
+        background: #c8e6c9;
+        padding: 2px 8px;
+        border-radius: 12px;
+    }
+    
+    /* Dropdown menu items */
+    .dropdown-profile ul {
+        padding: 10px 0;
+        margin: 0;
+        list-style: none;
+    }
+    
+    .dropdown-profile .dropdown-item {
+        padding: 12px 20px;
+        color: #2e7d32 !important;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .dropdown-profile .dropdown-item:hover {
+        background: #f1f8e9;
+        color: #1b5e20 !important;
+        padding-left: 25px;
+    }
+    
+    .dropdown-profile .dropdown-item i {
+        margin-right: 12px;
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .dropdown-profile .dropdown-item.text-danger {
+        color: #d32f2f !important;
+    }
+    
+    .dropdown-profile .dropdown-item.text-danger:hover {
+        background: #ffebee;
+        color: #c62828 !important;
+    }
+    
+    .dropdown-profile .dropdown-item.text-danger i {
+        color: #d32f2f;
+    }
+    
+    /* Logo styling */
+    .brand-logo img {
+        filter: brightness(1.1);
+        transition: all 0.3s ease;
+    }
+    
+    .brand-logo:hover img {
+        transform: scale(1.05);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .header-content {
+            padding: 0 15px;
+        }
+        
+        .brand-title {
+            font-size: 16px !important;
+        }
+        
+        .dropdown-profile {
+            min-width: 250px;
+            margin-top: 5px;
+        }
+        
+        .user-img img {
+            width: 35px;
+            height: 35px;
+        }
+    }
+    
+    /* Animation for dropdown */
+    .dropdown-profile.show {
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
