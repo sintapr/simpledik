@@ -42,21 +42,4 @@ class ProfilController extends Controller
 
         return back()->with('error', 'Tidak diizinkan.');
     }
-    public function edit()
-{
-    if (Auth::guard('guru')->check()) {
-        $user = Auth::guard('guru')->user();
-        $role = strtolower($user->jabatan);
-        return view('profil.edit-guru', compact('user', 'role'));
-    }
-
-    if (Auth::guard('siswa')->check()) {
-        $user = Auth::guard('siswa')->user();
-        $role = strtolower($user->ortu);
-        return view('profil.edit-ortu', compact('user', 'role'));
-    }
-
-    return back()->with('error', 'Akses tidak diizinkan.');
-}
-
 }

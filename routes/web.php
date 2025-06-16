@@ -23,11 +23,13 @@ use App\Http\Controllers\DetailNilaiCpController;
 use App\Http\Controllers\DetailNilaiP5Controller;
 use App\Http\Controllers\MateriTarbiyahController;
 use App\Http\Controllers\LaporanAssesmentController;
+use App\Http\Controllers\LaporanSemesterController;
 use App\Http\Controllers\IndikatorTarbiyahController;
 use App\Http\Controllers\DetailNilaiHafalanController;
 use App\Http\Controllers\MonitoringSemesterController;
 use App\Http\Controllers\TujuanPembelajaranController;
 use App\Http\Controllers\DetailNilaiTarbiyahController;
+use App\Http\Controllers\NotifikasiController;
 
 
 
@@ -51,20 +53,6 @@ Route::middleware('role:orangtua')->get('/dashboard/orangtua', function () {
 Route::middleware('role:admin')->get('/dashboard/admin', function () {
     return view('dashboard');
 })->name('dashboard.admin');
-
-// Route::middleware('role:wali_kelas')->get('/dashboard/wali_kelas', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-// Route::middleware('role:kepala_sekolah')->get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-
-
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -111,49 +99,22 @@ Route::resource('detail_nilai_cp', DetailNilaiCpController::class);
 Route::resource('detail_nilai_p5', DetailNilaiP5Controller::class);
 Route::resource('wali_kelas', WaliKelasController::class);
 Route::resource('anggota_kelas', AnggotaKelasController::class);
-
-
-
 Route::prefix('laporan-assesment')->name('laporan-assesment.')->group(function () {
     Route::get('/', [LaporanAssesmentController::class, 'index'])->name('index');
     Route::get('/{id_kelas}/{id_ta}', [LaporanAssesmentController::class, 'showByKelas'])->name('showByKelas');
     Route::get('/assesment/{nis}/{id_tp}/{id_ta}', [LaporanAssesmentController::class, 'showDetail'])->name('showDetail');
-
     // Ubah nama route agar unik
     Route::get('/cetak/{nis}/{id_kelas}/{id_ta}/{minggu}', [LaporanAssesmentController::class, 'cetakPdf'])->name('cetak');
     // Route::get('/cetak/{nis}/{id_kelas}/{id_ta}/{minggu}', [LaporanAssesmentController::class, 'cetakPdfMinggu'])->name('cetak.mingguan');
-
     Route::get('/notify/{nis}/{id_ta}/{id_kelas}/{minggu}', [LaporanAssesmentController::class, 'showNotifyForm'])->name('edit');
     Route::post('/notify/{nis}/{id_ta}/{id_kelas}/{minggu}', [LaporanAssesmentController::class, 'sendNotification'])->name('laporan.notify');
 });
 
-
-// Route::get('/profil', [App\Http\Controllers\ProfilController::class, 'edit'])->name('profil');
-// Route::post('/profil', [App\Http\Controllers\ProfilController::class, 'update'])->name('profil.update');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
 Route::get('/profil', [ProfilController::class, 'show'])->name('profil');
-Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
-Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
-
-
-
-use App\Http\Controllers\LaporanSemesterController;
-
-
-// Route::prefix('laporan-semester')->name('laporan-semester.')->group(function () {
-//     Route::get('/', [LaporanSemesterController::class, 'index'])->name('index');
-//     // Route::get('/{id_kelas}', [LaporanSemesterController::class, 'detail'])->name('detail');
-//     Route::get('/{nis}/{semester}/cetak', [LaporanSemesterController::class, 'cetakRapor'])->name('cetak');
-//     Route::get('/{nis}/{semester}', [LaporanSemesterController::class, 'show'])->name('semester');
-
-//     Route::get('/rapor/{id_kelas}/{id_ta}', [LaporanSemesterController::class, 'rapor'])->name('rapor');
-//     Route::get('/laporan/{id_kelas}/{id_ta}/rapor', [LaporanSemesterController::class, 'rapor'])->name('laporan-semester.rapor');
-//     Route::get('/laporan-semester/{nis}/{id_ta}', [LaporanSemesterController::class, 'show'])->name('laporan.show');
-// Route::get('/laporan-semester/detail/{id_kelas}/{id_ta}', [LaporanSemesterController::class, 'detail'])->name('laporan-semester.detail');
-
-// });
+// Route::post('/profil/update', [ProfilController::class, 'update'])->name('profil.update');
+// Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
 
 Route::prefix('laporan-semester')->name('laporan-semester.')->group(function () {
     // Halaman utama: daftar kelas & tahun ajaran
@@ -170,21 +131,12 @@ Route::prefix('laporan-semester')->name('laporan-semester.')->group(function () 
     Route::get('/rapor/{id_kelas}/{id_ta}', [LaporanSemesterController::class, 'rapor'])->name('rapor');
     Route::get('/notify/{nis}/{id_ta}/{id_kelas}', [LaporanSemesterController::class, 'notify'])->name('laporan.notify.form');
     Route::post('/notify/{nis}/{id_ta}/{id_kelas}', [LaporanSemesterController::class, 'notify'])->name('laporan.notify.send');
-
-// Akses rapor oleh orangtua (login sebagai siswa)
-Route::get('/laporan-orangtua', [LaporanSemesterController::class, 'ortu'])->name('laporan.ortu');
-
+    Route::get('/laporan-orangtua', [LaporanSemesterController::class, 'ortu'])->name('laporan.ortu');
 });
 
 Route::get('/laporan-semester/ortu', [LaporanSemesterController::class, 'ortu'])
     ->name('laporan-semester.ortu')
     ->middleware('auth:siswa'); // pastikan hanya siswa/orangtua yg bisa akses
-
-
-
-use App\Http\Controllers\NotifikasiController;
-// Route::post('/laporan-semester/notify/{nis}/{id_ta}', [NotifikasiController::class, 'kirimPerSiswa'])
-//     ->name('laporan-semester.laporan.notify');
 
 // Notifikasi
 Route::middleware(['auth'])->group(function() {
@@ -192,12 +144,6 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
     Route::post('/notifikasi/read-all', [NotifikasiController::class, 'markAllAsRead'])->name('notifikasi.readAll');
 });
-
-
-
-
-
-
 
 Route::get('/generate-id-rapor', [MonitoringSemesterController::class, 'generateIdRapor'])->name('monitoring.generateIdRapor');
 

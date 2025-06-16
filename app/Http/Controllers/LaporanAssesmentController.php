@@ -136,7 +136,7 @@ case 'kepala_sekolah':
         });
 
     // Ambil data siswa paginasi
-        $siswa = $query->withQueryString()->paginate(10);
+        $siswa = $query->paginate(10)->withQueryString();
 
     // Ambil seluruh assessment berdasarkan NIS yang ada di halaman saat ini
     $nisList = $siswa->pluck('NIS')->all();

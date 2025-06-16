@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Profil {{ strtoupper($role) }}</h2>
 
-    <form action="{{ route('profil.update') }}" method="POST" enctype="multipart/form-data">
+    {{-- <form action="{{ route('profil.update') }}" method="POST" enctype="multipart/form-data"> --}}
         @csrf
 
         @if($role === 'ortu')
@@ -33,6 +33,6 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-    </form>
+    {{-- </form> --}}
 </div>
 @endsection

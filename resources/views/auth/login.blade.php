@@ -81,10 +81,6 @@
             </form>
 
             <div class="flex justify-center gap-4 mt-6">
-    {{-- <!-- Facebook (Opsional, masih tombol) -->
-    <button class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100">
-        <i class="fab fa-facebook-f"></i>
-    </button> --}}
 
     <!-- Google Maps -->
     <a href="https://g.co/kgs/UXHscjh" target="_blank"
@@ -93,7 +89,7 @@
     </a>
 
     <!-- Instagram -->
-    <a href="https://www.instagram.com/kbtkislam_tarunaalquran/" target="_blank"
+    <a href="https://www.instagram.com/kbtkislam_tarunaalquran" target="_blank"
        class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100">
         <i class="fab fa-instagram"></i>
     </a>

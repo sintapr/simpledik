@@ -49,19 +49,33 @@
     {{-- Orangtua Section --}}
         <div class="row g-4">
             {{-- Informasi Sekolah --}}
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm card-hover mb-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="info-icon me-3">
-                                <i class="fas fa-school fa-lg"></i>
-                            </div>
-                            <h5 class="fw-bold mb-0 text-success">TK Islam Taruna Al Qur'an</h5>
-                        </div>
-                        <p class="text-muted mb-3">Lembaga pendidikan yang berfokus pada pembentukan karakter anak sejak usia dini melalui pendekatan islami dan pembelajaran aktif.</p>
-                    </div>
+            <div class="col-lg-8"> 
+    <div class="card border-0 shadow-sm card-hover mb-4">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <div class="info-icon me-3">
+                    <i class="fas fa-school fa-lg"></i>
                 </div>
+                <h5 class="fw-bold mb-0 text-success">TK Islam Taruna Al Qur'an</h5>
             </div>
+            <p class="text-muted mb-3">
+                TK Islam Taruna Al Qur'an adalah lembaga pendidikan anak usia dini yang berkomitmen dalam membentuk generasi Qur'ani sejak dini melalui pendekatan pembelajaran yang aktif, kreatif, dan menyenangkan berbasis nilai-nilai Islam.
+            </p>
+            <h6 class="fw-bold text-primary">Visi</h6>
+            <p class="text-muted">
+                Menjadi lembaga pendidikan Islam yang unggul dalam menanamkan nilai-nilai Al-Qur’an dan membentuk anak sholeh-sholehah yang cerdas, mandiri, dan berakhlak mulia.
+            </p>
+            <h6 class="fw-bold text-primary">Misi</h6>
+            <ul class="text-muted mb-0">
+                <li>Menanamkan cinta Al-Qur’an melalui pembelajaran dan keteladanan.</li>
+                <li>Mengembangkan potensi anak secara optimal sesuai tahap perkembangan usia dini.</li>
+                <li>Menyelenggarakan pembelajaran aktif, kreatif, dan menyenangkan berbasis nilai-nilai Islam.</li>
+                <li>Menumbuhkan kemandirian dan rasa tanggung jawab anak sejak dini.</li>
+                <li>Menjalin kemitraan yang erat antara sekolah dan orang tua dalam mendidik anak.</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
             {{-- Progress Belajar Chart --}}
             <div class="col-lg-4">

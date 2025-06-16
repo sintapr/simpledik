@@ -23,8 +23,6 @@
                     </td>
                 </tr>
             </table>
-
-            <a href="{{ route('profil.edit') }}" class="btn btn-primary mt-3">Edit Profil</a>
         </div>
     </div>
 </div>
