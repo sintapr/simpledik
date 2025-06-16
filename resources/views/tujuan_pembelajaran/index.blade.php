@@ -2,11 +2,17 @@
 @section('title', 'Tujuan Pembelajaran')
 
 @section('content')
+@php
+    $userRole = session('role');
+@endphp
+
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="fa fa-plus"></i> Tambah @yield('title')
-        </button>
+        @if ($userRole !== 'kepala_sekolah')
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambah">
+                <i class="fa fa-plus"></i> Tambah @yield('title')
+            </button>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -33,12 +39,14 @@
             </form>
 
             {{-- Modal Tambah --}}
-            @include('tujuan_pembelajaran.form', [
-                'action' => route('tujuan.store'),
-                'method' => 'POST',
-                'modalId' => 'modalTambah',
-                'title' => 'Tambah Tujuan Pembelajaran',
-            ])
+            @if ($userRole !== 'kepala_sekolah')
+                @include('tujuan_pembelajaran.form', [
+                    'action' => route('tujuan.store'),
+                    'method' => 'POST',
+                    'modalId' => 'modalTambah',
+                    'title' => 'Tambah Tujuan Pembelajaran',
+                ])
+            @endif
 
             {{-- Tabel Data --}}
             <table class="table table-bordered">
@@ -56,35 +64,40 @@
                             <td>{{ $item->id_tp }}</td>
                             <td>{{ $item->tujuan_pembelajaran }}</td>
                             <td>
-                                <span class="badge {{ $item->status ? 'bg-success' : 'bg-secondary' }} text-white">
-                                    {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
-                                </span>
-                            </td>
+    <span class="badge {{ $item->status ? 'bg-success' : 'bg-danger' }} text-white">
+        {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
+    </span>
+</td>
+
                             <td>
-                                <!-- Tombol Edit -->
-                                <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#modalEdit-{{ $item->id_tp }}">
-                                    <i class="fa fa-edit"></i>
-                                </a>
+                                @if ($userRole !== 'kepala_sekolah')
+                                    <!-- Tombol Edit -->
+                                    <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#modalEdit-{{ $item->id_tp }}">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
 
-                                {{-- Modal Edit --}}
-                                @include('tujuan_pembelajaran.form', [
-                                    'action' => route('tujuan.update', $item->id_tp),
-                                    'method' => 'PUT',
-                                    'modalId' => 'modalEdit-' . $item->id_tp,
-                                    'title' => 'Edit Tujuan Pembelajaran',
-                                    'data' => $item,
-                                ])
+                                    {{-- Modal Edit --}}
+                                    @include('tujuan_pembelajaran.form', [
+                                        'action' => route('tujuan.update', $item->id_tp),
+                                        'method' => 'PUT',
+                                        'modalId' => 'modalEdit-' . $item->id_tp,
+                                        'title' => 'Edit Tujuan Pembelajaran',
+                                        'data' => $item,
+                                    ])
 
-                                <!-- Tombol Hapus -->
-                                <form action="{{ route('tujuan.destroy', $item->id_tp) }}" method="POST"
-                                    class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('tujuan.destroy', $item->id_tp) }}" method="POST"
+                                        class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-muted">Hanya melihat</span>
+                                @endif
                             </td>
                         </tr>
                     @empty

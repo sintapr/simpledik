@@ -46,7 +46,7 @@
                                     <td class="text-center">{{ $first->semester }}</td>
                                     <td class="text-center">{{ $first->tahun }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('laporan-assesment.cetak.mingguan', [$siswa->NIS, $kelas->id_kelas, $tahunAjaran->id_ta, $first->minggu]) }}"
+                                        <a href="{{ route('laporan-assesment.cetak', [$siswa->NIS, $kelas->id_kelas, $tahunAjaran->id_ta, $first->minggu]) }}"
                                            target="_blank" class="btn btn-sm btn-primary">
                                             <i class="fa fa-print"></i> Cetak PDF
                                         </a>

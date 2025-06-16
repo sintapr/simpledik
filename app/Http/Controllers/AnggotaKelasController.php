@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\WaliKelas;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AnggotaKelasController extends Controller
@@ -32,6 +33,25 @@ class AnggotaKelasController extends Controller
                 $q->where('NIS', 'like', '%' . $search . '%');
             });
         }
+
+         // Filter berdasarkan role
+    $role = session('role');
+    if ($role === 'wali_kelas') {
+        $nip = Auth::guard('guru')->user()->NIP ?? null;
+        if ($nip) {
+            $query->whereHas('waliKelas', function ($q) use ($nip) {
+                $q->where('NIP', $nip);
+            });
+        }
+    }
+
+    // Filter pencarian
+    if ($search = $request->input('search')) {
+        $query->whereHas('siswa', function ($q) use ($search) {
+            $q->where('nama_siswa', 'like', '%' . $search . '%');
+        });
+    }
+
 
         $anggotaKelas = $query->paginate(10);
 
@@ -73,6 +93,11 @@ class AnggotaKelasController extends Controller
 
         public function store(Request $request)
     {
+         // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+        
         $request->validate([
             'id_wakel' => 'required',
             'siswa_ids' => 'required|array',
@@ -104,6 +129,10 @@ class AnggotaKelasController extends Controller
 
     public function destroy($id)
     {
+         if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+
         AnggotaKelas::where('id_anggota', $id)->delete();
         return redirect()->back()->with('success', 'Siswa berhasil dihapus dari kelas');
     }

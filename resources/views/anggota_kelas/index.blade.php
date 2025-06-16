@@ -4,9 +4,11 @@
 @section('content')
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
+        @if(session('role') !== 'kepala_sekolah')
         <a href="{{ route('anggota_kelas.create') }}" class="btn btn-primary mb-3">
-            <i class="fa fa-plus"></i> Input Siswa ke Kelas
+            <i class="fa fa-plus"></i> Manajemen Anggota Kelas
         </a>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -51,45 +53,52 @@
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>NIS</th>
-                            <th>Nama Siswa</th>
-                            <th>Tahun Ajaran</th>
-                            <th>Wali Kelas</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($anggotaKelas as $item)
-                            <tr>
-                                <td>{{ $item->siswa->NIS }}</td>
-                                <td>{{ $item->siswa->nama_siswa }}</td>
-                                <td>
-                                    <span class="badge bg-info text-white">
-                                        {{ $item->waliKelas->tahunAjaran->tahun_mulai }} - Semester {{ ucfirst($item->waliKelas->tahunAjaran->semester) }}
-                                    </span>
-                                </td>
-                                <td>{{ $item->waliKelas->guru->nama_guru ?? '-' }}</td>
-                                <td class="text-center">
-                                    <form method="POST" action="{{ route('anggota_kelas.destroy', $item->id_anggota) }}"
-                                        onsubmit="return confirm('Yakin ingin menghapus siswa dari kelas ini?')"
-                                        style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Belum ada anggota kelas untuk tahun ajaran ini.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    <thead class="table-light">
+        <tr>
+            <th>NIS</th>
+            <th>Nama Siswa</th>
+            <th>Tahun Ajaran</th>
+            <th>Wali Kelas</th>
+            @if(session('role') !== 'kepala_sekolah')
+                <th class="text-center">Aksi</th>
+            @endif
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($anggotaKelas as $item)
+            <tr>
+                <td>{{ $item->siswa->NIS }}</td>
+                <td>{{ $item->siswa->nama_siswa }}</td>
+                <td>
+                    <span class="badge bg-info text-white">
+                        {{ $item->waliKelas->tahunAjaran->tahun_mulai }} - Semester {{ ucfirst($item->waliKelas->tahunAjaran->semester) }}
+                    </span>
+                </td>
+                <td>{{ $item->waliKelas->guru->nama_guru ?? '-' }}</td>
+                @if(session('role') !== 'kepala_sekolah')
+                    <td class="text-center">
+                        <form method="POST" action="{{ route('anggota_kelas.destroy', $item->id_anggota) }}"
+                            onsubmit="return confirm('Yakin ingin menghapus siswa dari kelas ini?')"
+                            style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                @endif
+            </tr>
+        @empty
+            <tr>
+                <td colspan="{{ session('role') !== 'kepala_sekolah' ? 5 : 4 }}" class="text-center text-muted">
+                    Belum ada anggota kelas untuk tahun ajaran ini.
+                </td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
+
             </div>
 
             <p class="mt-3 text-muted">

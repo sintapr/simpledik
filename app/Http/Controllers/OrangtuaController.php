@@ -44,6 +44,11 @@ class OrangtuaController extends Controller
 
     public function store(Request $request)
 {
+    // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
     $request->validate([
         'id_ortu' => 'required|unique:orangtua,id_ortu|max:8',
         'NIS' => 'required|max:8',
@@ -89,6 +94,11 @@ class OrangtuaController extends Controller
 
     public function edit($id)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $orangtua = Orangtua::findOrFail($id);
         return view('orangtua.form', compact('orangtua'));
     }
@@ -112,6 +122,10 @@ class OrangtuaController extends Controller
 
     public function destroy($id)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         Orangtua::destroy($id);
         return redirect()->route('orangtua.index')->with('success', 'Data orang tua berhasil dihapus.');
     }

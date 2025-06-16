@@ -4,8 +4,11 @@
 @section('content')
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
+        @if(session('role') !== 'kepala_sekolah')
         <a href="{{ route('wali_kelas.create') }}" class="btn btn-primary">
-            <i class="fa fa-plus"></i> Tambah Wali Kelas</a>
+            <i class="fa fa-plus"></i> Tambah Wali Kelas
+        </a>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -56,7 +59,9 @@
                                     <th>Nama Guru</th>
                                     <th>Kelas</th>
                                     <th>Tahun Ajaran</th>
+                                    @if(session('role') !== 'kepala_sekolah')
                                     <th>Aksi</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,6 +71,7 @@
                                         <td>{{ $wakel->guru->nama_guru ?? '-' }}</td>
                                         <td>{{ $wakel->kelas->nama_kelas ?? '-' }}</td>
                                         <td>{{ $wakel->tahunAjaran->tahun_ajaran }} - {{ $wakel->tahunAjaran->semester_text }}</td>
+                                        @if(session('role') !== 'kepala_sekolah')
                                         <td>
                                             <a href="{{ route('wali_kelas.edit', $wakel->id_wakel) }}" class="btn btn-warning btn-sm" title="Edit">
                                                 <i class="fa fa-edit"></i>
@@ -77,25 +83,24 @@
                                                 </button>
                                             </form>
                                         </td>
+                                        @endif
                                     </tr>
                                 @empty
-                                    <tr><td colspan="5" class="text-center">Tidak ada data wali kelas</td></tr>
+                                    <tr><td colspan="{{ session('role') !== 'kepala_sekolah' ? 5 : 4 }}" class="text-center">Tidak ada data wali kelas</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
-
                         {{-- Keterangan jumlah data --}}
                         <p class="mt-2">
                             Menampilkan {{ $waliKelas->count() }} dari {{ $waliKelas->total() }} data wali kelas.
                         </p>
-
                         {{-- Pagination --}}
                         <div class="d-flex justify-content-center">
                             {{ $waliKelas->appends(request()->query())->links('pagination::bootstrap-4') }}
                         </div>
-                    </div> {{-- .table-responsive --}}
-                </div> {{-- .card-body --}}
-            </div> {{-- .card --}}
+                    </div> 
+                </div> 
+            </div> 
         </div>
     </div>
 </div>

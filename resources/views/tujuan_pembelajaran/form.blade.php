@@ -25,24 +25,23 @@
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Status</label>
-                        <div>
-                            <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="status" id="aktif-{{ $modalId }}" value="1"
-                                {{ old('status', $data->status ?? 0) == 1 ? 'checked' : '' }}>
-                            <label class="form-check-label" for="aktif-{{ $modalId }}">Aktif</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="status" id="tidakaktif-{{ $modalId }}" value="0"
-                                {{ old('status', $data->status ?? 0) == 0 ? 'checked' : '' }}>
-                            <label class="form-check-label" for="tidakaktif-{{ $modalId }}">Tidak Aktif</label>
-                            </div>
-                        </div>
-                        @error('status')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                    </div>
+                  <div class="mb-3">
+    <label class="form-label">Status</label>
+    <div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="aktif-{{ $modalId }}" value="1"
+                {{ isset($data) && $data->status == 1 ? 'checked' : '' }}>
+            <label class="form-check-label" for="aktif-{{ $modalId }}">Aktif</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="status" id="tidakaktif-{{ $modalId }}" value="0"
+                {{ isset($data) && $data->status == 0 ? 'checked' : '' }}>
+            <label class="form-check-label" for="tidakaktif-{{ $modalId }}">Tidak Aktif</label>
+        </div>
+    </div>
+</div>
+
+
 
                 </div>
                 <div class="modal-footer">

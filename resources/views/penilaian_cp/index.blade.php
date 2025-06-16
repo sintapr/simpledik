@@ -2,11 +2,17 @@
 @section('title', 'Data Penilaian CP')
 
 @section('content')
+@php
+    $userRole = session('role');
+@endphp
+
 <div class="row page-titles mx-0 justify-content-between align-items-center">
     <div class="col-auto">
-        <a href="{{ route('penilaian_cp.create') }}" class="btn btn-primary mb-3">
-            <i class="fa fa-plus"></i> Tambah @yield('title')
-        </a>
+        @if ($userRole !== 'kepala_sekolah')
+            <a href="{{ route('penilaian_cp.create') }}" class="btn btn-primary mb-3">
+                <i class="fa fa-plus"></i> Tambah @yield('title')
+            </a>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -51,13 +57,17 @@
                             <td>{{ $item->perkembangan->indikator ?? '-' }}</td>
                             <td>{{ $item->aspek_nilai }}</td>
                             <td>
-                                <a href="{{ route('penilaian_cp.edit', $item->id_penilaian_cp) }}" class="btn btn-warning btn-sm">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <form action="{{ route('penilaian_cp.destroy', $item->id_penilaian_cp) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                                </form>
+                                @if ($userRole !== 'kepala_sekolah')
+                                    <a href="{{ route('penilaian_cp.edit', $item->id_penilaian_cp) }}" class="btn btn-warning btn-sm">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('penilaian_cp.destroy', $item->id_penilaian_cp) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus?')">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    </form>
+                                @else
+                                    <span class="text-muted">Hanya melihat</span>
+                                @endif
                             </td>
                         </tr>
                         @empty

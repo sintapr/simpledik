@@ -128,6 +128,22 @@ public function kirimPerSiswa(Request $request, $nis, $id_ta)
         ->with('success', 'Notifikasi berhasil dikirim ke orangtua.');
 }
 
+public function markAllAsRead()
+{
+    $role = session('role');
+    $nis = Auth::guard('siswa')->check() ? Auth::guard('siswa')->user()->NIS : null;
+
+    Notifikasi::where('untuk_role', $role)
+        ->when($nis, function ($query) use ($nis) {
+            $query->where(function ($q) use ($nis) {
+                $q->whereNull('NIS')->orWhere('NIS', $nis);
+            });
+        })
+        ->update(['dibaca' => true]);
+
+    return redirect()->back()->with('success', 'Semua notifikasi ditandai sebagai dibaca.');
+}
+
 
 
 

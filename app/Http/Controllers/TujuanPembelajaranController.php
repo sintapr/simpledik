@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 use App\Models\TujuanPembelajaran;
 
 class TujuanPembelajaranController extends Controller
@@ -32,6 +34,11 @@ class TujuanPembelajaranController extends Controller
 
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'tujuan_pembelajaran' => 'required',
             'status' => 'required|in:0,1',
@@ -56,24 +63,34 @@ class TujuanPembelajaranController extends Controller
         return redirect()->route('tujuan.index')->with('success', 'Data berhasil ditambahkan');
     }
 
-    public function update(Request $request, $id_tp)
-    {
-        $request->validate([
-            'tujuan_pembelajaran' => 'required',
-            'status' => 'required|in:0,1',
-        ]);
+   public function update(Request $request, $id_tp)
+{
+    // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
 
-        $data = TujuanPembelajaran::findOrFail($id_tp);
-        $data->update([
-            'tujuan_pembelajaran' => $request->tujuan_pembelajaran,
-            'status' => $request->status,
-        ]);
+    $request->validate([
+        'tujuan_pembelajaran' => 'required|string',
+        'status' => 'required|in:0,1',
+    ]);
 
-        return redirect()->route('tujuan.index')->with('success', 'Data berhasil diperbarui');
-    }
+    $data = TujuanPembelajaran::findOrFail($id_tp);
+    $data->update([
+        'tujuan_pembelajaran' => $request->tujuan_pembelajaran,
+        'status' => $request->status,
+    ]);
+
+    return redirect()->route('tujuan.index')->with('success', 'Data berhasil diperbarui');
+}
+
 
     public function destroy($id_tp)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         TujuanPembelajaran::destroy($id_tp);
         return redirect()->route('tujuan.index')->with('success', 'Data berhasil dihapus');
     }

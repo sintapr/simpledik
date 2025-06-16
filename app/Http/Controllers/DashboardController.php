@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Siswa; 
 use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
@@ -22,8 +23,8 @@ class DashboardController extends Controller
             $user = Auth::guard('siswa')->user();
         } elseif (in_array($role, ['admin', 'wali_kelas', 'kepala_sekolah'])) {
             $user = Auth::guard('guru')->user();
-        } elseif ($role == 'orangtua') {
-            $user = Auth::guard('orangtua')->user();
+        } elseif ($role == 'ortu') {
+            $user = Auth::guard('ortu')->user();
             if ($user) {
                 $user->siswa = $this->getSiswaData($user->NIS);
             }
@@ -57,10 +58,15 @@ class DashboardController extends Controller
         Log::info('Distribusi Kelas:', $distribusiKelas->toArray());
 
         // Data khusus orangtua
-        $rekapHasilBelajar = collect();
-        if ($role === 'orangtua' && isset($user->siswa)) {
-            $rekapHasilBelajar = $this->getRangkumanBelajar($user->NIS);
+       $rekapHasilBelajar = collect();
+
+        if (in_array($role, ['ortu', 'siswa'])) {
+            $nis = $role === 'ortu' ? $user->NIS : $user->NIS ?? null;
+            if ($nis) {
+                $rekapHasilBelajar = $this->getRangkumanBelajar($nis);
+            }
         }
+
 
         return view('dashboard', [
             'user' => $user,
@@ -196,53 +202,78 @@ class DashboardController extends Controller
     }
 
     private function getSiswaData($nis)
-    {
-        try {
-            $siswa = DB::table('siswa')->where('NIS', $nis)->first();
-            if ($siswa) {
-                $siswa->kelas = $this->getKelasData($nis);
-                return $siswa;
-            }
-        } catch (\Exception $e) {
-            Log::error('Error getting siswa data: ' . $e->getMessage());
-        }
-        return null;
-    }
+{
+    try {
+        $siswa = \App\Models\Siswa::where('NIS', $nis)->with([
+            'anggotaKelas.waliKelas.guru',
+            'anggotaKelas.waliKelas.kelas'
+        ])->first();
 
-    private function getKelasData($nis)
-    {
-        try {
-            // Query step by step untuk menghindari error
-            $anggotaKelas = DB::table('anggota_kelas')->where('NIS', $nis)->first();
-            
-            if ($anggotaKelas) {
-                $waliKelas = DB::table('wali_kelas')->where('id_wakel', $anggotaKelas->id_wakel)->first();
-                
-                if ($waliKelas) {
-                    $kelas = DB::table('kelas')->where('id_kelas', $waliKelas->id_kelas)->first();
-                    $guru = DB::table('guru')->where('NIP', $waliKelas->NIP)->first();
-                    
-                    return (object)[
-                        'nama_kelas' => $kelas->nama_kelas ?? 'Belum terdaftar',
-                        'waliKelas' => (object)[
-                            'nama_guru' => $guru->nama_guru ?? '-',
-                            'no_hp' => $guru->NIP ?? '-'
-                        ]
-                    ];
-                }
-            }
-        } catch (\Exception $e) {
-            Log::error('Error getting kelas data: ' . $e->getMessage());
+        if (!$siswa) {
+            Log::warning("Siswa dengan NIS $nis tidak ditemukan.");
+            return null;
         }
 
-        return (object)[
-            'nama_kelas' => 'Belum terdaftar',
+        // Log isi relasi untuk debugging
+        Log::info('Data siswa ditemukan:', [
+            'nama' => $siswa->nama_siswa,
+            'anggota_kelas' => $siswa->anggotaKelas,
+            'wali_kelas' => optional($siswa->anggotaKelas)->waliKelas,
+            'guru_wali' => optional($siswa->anggotaKelas->waliKelas)->guru ?? null,
+            'kelas' => optional($siswa->anggotaKelas->waliKelas)->kelas ?? null
+        ]);
+
+        // Siapkan properti tambahan untuk ditampilkan di Blade
+        $siswa->kelas = (object)[
+            'nama_kelas' => optional($siswa->anggotaKelas->waliKelas->kelas)->nama_kelas ?? 'Belum terdaftar',
             'waliKelas' => (object)[
-                'nama_guru' => '-',
-                'no_hp' => '-'
+                'nama_guru' => optional($siswa->anggotaKelas->waliKelas->guru)->nama_guru ?? '-',
+                'no_hp' => optional($siswa->anggotaKelas->waliKelas->guru)->no_hp ?? '-'
             ]
         ];
+
+        return $siswa;
+    } catch (\Exception $e) {
+        Log::error('Error getting siswa data: ' . $e->getMessage());
+        return null;
     }
+}
+
+
+
+
+   private function getKelasData($nis)
+{
+    try {
+        $siswa = Siswa::where('NIS', $nis)->with([
+            'anggotaKelas.waliKelas.guru',
+            'anggotaKelas.waliKelas.kelas'
+        ])->first();
+
+        $waliKelas = optional($siswa->anggotaKelas)->waliKelas;
+        $guru = optional($waliKelas)->guru;
+        $kelas = optional($waliKelas)->kelas;
+
+        return (object)[
+            'nama_kelas' => $kelas->nama_kelas ?? 'Belum terdaftar',
+            'waliKelas' => (object)[
+                'nama_guru' => $guru->nama_guru ?? '-',
+                'no_hp' => $guru->no_hp ?? '-'
+            ]
+        ];
+    } catch (\Exception $e) {
+        Log::error('Error getting kelas data: ' . $e->getMessage());
+    }
+
+    return (object)[
+        'nama_kelas' => 'Belum terdaftar',
+        'waliKelas' => (object)[
+            'nama_guru' => '-',
+            'no_hp' => '-'
+        ]
+    ];
+}
+
 
     private function getRangkumanBelajar($nis)
     {

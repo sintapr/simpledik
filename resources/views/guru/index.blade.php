@@ -5,10 +5,12 @@
 @section('content')
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
+        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
         <!-- Tombol Tambah -->
         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahGuru">
             <i class="fa fa-plus"></i> Tambah @yield('title')
         </button>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -30,7 +32,6 @@
                         value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2">
-                    <!-- Tombol Cari -->
                     <button class="btn btn-primary w-100" type="submit">
                         <i class="fa fa-search"></i> Cari
                     </button>
@@ -38,6 +39,7 @@
             </form>
 
             {{-- Modal Tambah Guru --}}
+            @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
             <div class="modal fade" id="modalTambahGuru" tabindex="-1">
                 <div class="modal-dialog">
                     <form action="{{ route('guru.store') }}" method="POST" enctype="multipart/form-data">
@@ -46,6 +48,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             {{-- Tabel --}}
             <table class="table table-bordered">
@@ -57,7 +60,9 @@
                         <th>Tanggal Lahir</th>
                         <th>Foto</th>
                         <th>Status</th>
+                        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -75,24 +80,23 @@
                             @endif
                         </td>
                         <td>
-                            <span class="badge {{ $item->status ? 'bg-success' : 'bg-secondary' }} text-white">
-                                {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
-                            </span>
-                        </td>
-                        <td>
-                            {{-- Lihat detail hanya admin --}}
-                            @if (auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
-                                <a href="{{ route('guru.show', $item->NIP) }}" class="btn btn-success btn-sm" title="Lihat Detail">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            @endif
+    <span class="badge {{ $item->status ? 'bg-success' : 'bg-danger' }} text-white">
+        {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
+    </span>
+</td>
 
-                            {{-- Edit --}}
+                        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
+                        <td>
+                            <a href="{{ route('guru.show', $item->NIP) }}" class="btn btn-success btn-sm" title="Lihat Detail">
+                                <i class="fa fa-eye"></i>
+                            </a>
+
+                            <!-- Tombol Edit -->
                             <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditGuru-{{ $item->NIP }}">
                                 <i class="fa fa-edit"></i>
                             </button>
 
-                            {{-- Modal Edit --}}
+                            <!-- Modal Edit -->
                             <div class="modal fade" id="modalEditGuru-{{ $item->NIP }}" tabindex="-1">
                                 <div class="modal-dialog">
                                     <form action="{{ route('guru.update', $item->NIP) }}" method="POST" enctype="multipart/form-data">
@@ -102,12 +106,13 @@
                                 </div>
                             </div>
 
-                            {{-- Hapus --}}
+                            <!-- Hapus -->
                             <form action="{{ route('guru.destroy', $item->NIP) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
                                 @csrf @method('DELETE')
                                 <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
                             </form>
                         </td>
+                        @endif
                     </tr>
                     @empty
                     <tr>
@@ -117,16 +122,13 @@
                 </tbody>
             </table>
 
-            {{-- Keterangan jumlah --}}
             <p class="mt-2">
                 Menampilkan {{ $guru->count() }} dari {{ $guru->total() }} Data Guru
             </p>
 
-            {{-- Pagination --}}
             <div class="d-flex justify-content-center">
-    {{ $guru->appends(request()->query())->links('pagination::bootstrap-4') }}
-</div>
-
+                {{ $guru->appends(request()->query())->links('pagination::bootstrap-4') }}
+            </div>
         </div>
     </div>
 </div>

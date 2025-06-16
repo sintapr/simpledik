@@ -48,6 +48,11 @@ class SuratHafalanController extends Controller
 
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'id_surat' => 'required|unique:surat_hafalan',
             'nama_surat' => 'required|max:15',
@@ -60,6 +65,11 @@ class SuratHafalanController extends Controller
 
     public function edit($id_surat)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $item = SuratHafalan::findOrFail($id_surat);
         $perkembangan = Perkembangan::all();
 
@@ -73,6 +83,11 @@ class SuratHafalanController extends Controller
 
     public function update(Request $request, $id_surat)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+        
         $request->validate([
             'nama_surat' => 'required|max:15',
             'id_perkembangan' => 'required'
@@ -89,6 +104,10 @@ class SuratHafalanController extends Controller
 
     public function destroy($id_surat)
     {
+         if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+
         SuratHafalan::findOrFail($id_surat)->delete();
         return redirect()->route('surat-hafalan.index')->with('success', 'Surat Hafalan berhasil dihapus');
     }

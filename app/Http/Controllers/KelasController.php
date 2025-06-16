@@ -44,6 +44,11 @@ class KelasController extends Controller
 
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'id_kelas' => 'required|string|max:8|unique:kelas',
             'nama_kelas' => 'nullable|string|max:6',
@@ -56,12 +61,22 @@ class KelasController extends Controller
 
     public function edit($id_kelas)
     {
+
+    // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $kelas = Kelas::findOrFail($id_kelas);
         return view('kelas.form', compact('kelas'));
     }
 
     public function update(Request $request, $id_kelas)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $kelas = Kelas::findOrFail($id_kelas);
 
         $request->validate([
@@ -78,6 +93,10 @@ class KelasController extends Controller
 
     public function destroy($id_kelas)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+
         $kelas = Kelas::findOrFail($id_kelas);
         $kelas->delete();
 

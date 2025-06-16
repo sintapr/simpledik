@@ -72,24 +72,33 @@
                         <input type="checkbox" name="remember" class="mr-2 h-4 w-4 border-gray-300 rounded text-green-600 focus:ring-green-500">
                         Ingat saya
                     </label>
-                    <a href="#" class="text-green-600 hover:text-green-700">Lupa kata sandi?</a>
                 </div>
 
                 <button type="submit"
                     class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-200 font-semibold">
                     <i class="fas fa-sign-in-alt mr-2"></i>Masuk
                 </button>
-
-                <div class="text-center mt-4 text-sm">
-                    Belum punya akun? <a href="#" class="text-green-600 hover:text-green-700">Daftar Gratis</a>
-                </div>
             </form>
 
             <div class="flex justify-center gap-4 mt-6">
-                <button class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100"><i class="fab fa-facebook-f"></i></button>
-                <button class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100"><i class="fab fa-google"></i></button>
-                <button class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100"><i class="fab fa-instagram"></i></button>
-            </div>
+    {{-- <!-- Facebook (Opsional, masih tombol) -->
+    <button class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100">
+        <i class="fab fa-facebook-f"></i>
+    </button> --}}
+
+    <!-- Google Maps -->
+    <a href="https://g.co/kgs/UXHscjh" target="_blank"
+       class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100">
+        <i class="fab fa-google"></i>
+    </a>
+
+    <!-- Instagram -->
+    <a href="https://www.instagram.com/kbtkislam_tarunaalquran/" target="_blank"
+       class="border border-green-600 px-4 py-2 rounded-lg text-green-600 hover:bg-green-100">
+        <i class="fab fa-instagram"></i>
+    </a>
+</div>
+
         </div>
     </div>
 

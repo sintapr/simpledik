@@ -48,6 +48,11 @@ class MateriTarbiyahController extends Controller
 
 public function store(Request $request)
 {
+     // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
     $last = MateriTarbiyah::orderByDesc('id_materi')->first();
     $lastNumber = $last ? (int) substr($last->id_materi, 2) : 0;
     $newId = 'MT' . str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
@@ -73,6 +78,11 @@ public function store(Request $request)
 
     public function edit($id_materi)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $materi = MateriTarbiyah::findOrFail($id_materi);
         $indikator = IndikatorTarbiyah::all();
         return view('materi_tarbiyah.form', compact('materi', 'indikator'));
@@ -80,6 +90,10 @@ public function store(Request $request)
 
     public function update(Request $request, $id_materi)
 {
+    if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
     $request->validate([
         'materi' => 'required',
         'id_indikator' => 'required|exists:indikator_tarbiyah,id_indikator',
@@ -102,6 +116,10 @@ public function store(Request $request)
 
     public function destroy($id_materi)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         $materi = MateriTarbiyah::findOrFail($id_materi);
         $materi->delete();
         return redirect()->route('materi_tarbiyah.index')->with('success', 'Data berhasil dihapus.');

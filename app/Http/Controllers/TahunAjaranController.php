@@ -48,6 +48,11 @@ class TahunAjaranController extends Controller
 
         public function store(Request $request)
     {
+         // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'id_ta' => 'required|unique:tahun_ajaran,id_ta',
             'semester' => 'required|in:1,2',
@@ -74,12 +79,21 @@ class TahunAjaranController extends Controller
 
     public function edit($id)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $tahunAjaran = TahunAjaran::findOrFail($id);
         return view('tahun-ajaran.form', compact('tahunAjaran'));
     }
 
         public function update(Request $request, $id)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+        
         $request->validate([
             'semester' => 'required|in:1,2',
             'tahun_ajaran' => ['required', 'regex:/^\d{4}\/\d{4}$/'],

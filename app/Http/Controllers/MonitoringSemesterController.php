@@ -58,6 +58,10 @@ class MonitoringSemesterController extends Controller
 
         public function store(Request $request)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+        
         $request->validate([
             'NIS' => 'required',
             'id_kelas' => 'required',
@@ -137,6 +141,10 @@ class MonitoringSemesterController extends Controller
     
     public function edit($id_rapor)
     {
+         if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $monitoring = MonitoringSemester::findOrFail($id_rapor);
         return view('monitoring.form', [
             'monitoring' => $monitoring,
@@ -152,6 +160,10 @@ class MonitoringSemesterController extends Controller
 
     public function update(Request $request, $id_rapor)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $monitoring = MonitoringSemester::findOrFail($id_rapor);
         $monitoring->update($request->all());
         return redirect()->route('monitoring.index')->with('success', 'Data berhasil diupdate');
@@ -159,6 +171,10 @@ class MonitoringSemesterController extends Controller
 
     public function destroy($id_rapor)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+
         $monitoring = MonitoringSemester::findOrFail($id_rapor);
         $monitoring->delete();
         return redirect()->route('monitoring.index')->with('success', 'Data berhasil dihapus');

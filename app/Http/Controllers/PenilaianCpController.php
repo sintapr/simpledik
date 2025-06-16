@@ -44,6 +44,10 @@ class PenilaianCpController extends Controller
 
         public function store(Request $request)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'id_perkembangan' => 'required',
             'aspek_nilai' => 'required'
@@ -71,6 +75,10 @@ class PenilaianCpController extends Controller
 
     public function edit($id_penilaian_cp)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $penilaian = PenilaianCp::findOrFail($id_penilaian_cp);
         return view('penilaian_cp.form', [
             'penilaian' => $penilaian,
@@ -82,6 +90,10 @@ class PenilaianCpController extends Controller
 
     public function update(Request $request, $id_penilaian_cp)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $penilaian = PenilaianCp::findOrFail($id_penilaian_cp);
         $penilaian->update($request->all());
         return redirect()->route('penilaian_cp.index')->with('success', 'Data berhasil diupdate');
@@ -89,6 +101,10 @@ class PenilaianCpController extends Controller
 
     public function destroy($id_penilaian_cp)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         PenilaianCp::destroy($id_penilaian_cp);
         return redirect()->route('penilaian_cp.index')->with('success', 'Data berhasil dihapus');
     }

@@ -87,7 +87,7 @@
                 {{ $siswa->appends(request()->query())->links('pagination::bootstrap-4') }}
             </div>
 
-            <a href="{{ route('laporan-assesment.index') }}" class="btn btn-secondary mt-3">Kembali ke Daftar Kelas</a>
+            <a href="{{ route('laporan-assesment.index') }}" class="btn btn-primary mt-3">Kembali ke Daftar Kelas</a>
         </div>
     </div>
 </div>

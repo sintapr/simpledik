@@ -1,236 +1,236 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <title>Rapor PDF</title>
+    <meta charset="UTF-8">
+    <title>Rapor - {{ $siswa->nama_siswa }}</title>
     <style>
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
-            line-height: 1.6;
-            margin: 30px;
+            font-size: 12px;
+            margin: 25px;
             color: #000;
         }
-        .arabic {
-        direction: rtl;
-        text-align: right;
-        font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade', 'DejaVu Sans', sans-serif;
-        font-size: 14px;
-        line-height: 2;
-    }
-        .center { text-align: center; }
-        .header img { margin-bottom: 5px; }
-        .header h3, .header h4, .header p { margin: 3px 0; }
-        h4.section-title {
-            font-weight: bold;
-            font-size: 13px;
-            margin: 20px 0 8px;
+
+        h2 {
+            text-align: center;
             text-transform: uppercase;
-            border-left: 5px solid #000;
-            padding-left: 8px;
-            background-color: #f9f9f9;
+            margin: 10px 0 20px;
         }
-        table {
+
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 30px;
+            margin-bottom: 8px;
+            border-left: 5px solid #000;
+            padding-left: 10px;
+            background-color: #f5f5f5;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .info-table td {
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+
+        .table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 12px;
             margin-bottom: 15px;
         }
-        th {
-            background-color: #f0f0f0;
-            font-weight: bold;
-        }
-        th, td {
+
+        .table th, .table td {
             border: 1px solid #000;
             padding: 6px;
             vertical-align: top;
         }
-        .no-border td {
-            border: none;
-            padding: 4px 2px;
+
+        .table th {
+            background-color: #f0f0f0;
         }
-        .signature td {
-            text-align: center;
-            border: none;
-            padding-top: 60px;
-            font-size: 11px;
+
+        .arabic {
+            direction: rtl;
+            text-align: right;
+            font-family: 'DejaVu Sans', serif;
+            font-size: 14px;
+            line-height: 2;
+            margin-bottom: 10px;
         }
-        .signature td strong {
-            text-decoration: underline;
-        }
-        .foto-siswa {
-            width: 100px;
-            height: 130px;
-            object-fit: cover;
-            border: 1px solid #000;
-            display: block;
-            margin: 0 auto 10px;
-        }
+
         .foto-cp, .foto-p5 {
-            max-width: 100px;
-            max-height: 100px;
+            max-width: 90px;
+            max-height: 90px;
             object-fit: cover;
             border: 1px solid #000;
         }
-        .identitas-foto {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            margin-bottom: 20px;
+
+        .ttd-section {
+            display: table;
+            width: 100%;
+            margin-top: 60px;
+            text-align: center;
+            font-size: 13px;
         }
-        .identitas { width: 65%; }
-        .foto { width: 30%; text-align: center; }
-        .foto img {
-            width: 100px;
-            height: 130px;
-            object-fit: cover;
-            border: 1px solid #000;
+
+        .ttd-col {
+            display: table-cell;
+            width: 33%;
+            vertical-align: top;
+        }
+
+        .ttd-box {
+            margin-top: 60px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-break {
+            page-break-before: always;
         }
     </style>
 </head>
 <body>
-<div class="center header">
-    <img src="{{ public_path('images/bgbro.png') }}" width="70">
-    <h3>TAMAN KANAK-KANAK ISLAM TARUNA AL QURAN</h3>
-    <p>Jl. Lempongsari 4A, Sariharjo, Ngaglik, Sleman Yogyakarta 55581</p>
-    <h4 style="margin-top: 10px;">LAPORAN PERKEMBANGAN PESERTA DIDIK</h4>
-</div>
 
-<div class="identitas-foto">
-    <div class="identitas">
-        <h4 class="section-title">Identitas Siswa</h4>
-        <table class="no-border">
-            <tr><td>Nama Lengkap</td><td>: {{ $siswa->nama_siswa }}</td></tr>
-            <tr><td>NIK</td><td>: {{ $siswa->NIK }}</td></tr>
-            <tr><td>Tempat & Tgl Lahir</td><td>: {{ $siswa->tempat_lahir }}, {{ \Carbon\Carbon::parse($siswa->tgl_lahir)->translatedFormat('d F Y') }}</td></tr>
-            <tr><td>Jenis Kelamin</td><td>: {{ $siswa->jenis_kelamin }}</td></tr>
-            <tr><td>Agama</td><td>: Islam</td></tr>
-            <tr><td>Anak ke</td><td>: {{ $siswa->anak_ke ?? '-' }}</td></tr>
-            <tr><td>Jumlah Saudara</td><td>: {{ $siswa->jumlah_saudara ?? '-' }}</td></tr>
-        </table>
-    </div>
-    <div class="foto">
-        <img src="{{ public_path('storage/' . $siswa->foto) }}" class="foto-siswa">
-    </div>
-</div>
+{{-- Header --}}
+<table style="width: 100%; margin-bottom: 20px;">
+    <tr>
+        <td style="width: 90px;">
+            <img src="{{ public_path('images/bgbro.png') }}" alt="Logo" style="width: 90px;">
+        </td>
+        <td style="text-align: left; padding-left: 15px;">
+            <div style="font-size: 16pt; font-weight: bold;">TAMAN KANAK-KANAK ISLAM TARUNA AL QUR’AN</div>
+            <div style="font-size: 12pt;">Lempongsari, Sariharjo, Ngaglik, Sleman, Yogyakarta</div>
+            <div style="font-size: 10pt;">Telp. 087838997479 | Email: <span style="color: blue;">kbtki_taruna_alquran@yahoo.com</span> | Web: <span style="color: blue;">www.taruna-alquran.com</span></div>
+        </td>
+    </tr>
+</table>
 
-<h4 class="section-title">Muqoddimah</h4>
-<div class="arabic">
-    {!! $muqoddimah !!}
-</div>
+<hr style="border: none; border-top: 3px double black; margin: 10px 0 20px;">
 
+<h2>Laporan Perkembangan Peserta Didik</h2>
 
-<h4 class="section-title">Hafalan Surat Pendek</h4>
-<table>
-    <thead>
-        <tr><th>No</th><th>Nama Surat</th><th>Nilai</th></tr>
-    </thead>
+{{-- IDENTITAS --}}
+<table class="info-table">
+    <tr><td>Nama</td><td>: {{ $siswa->nama_siswa }}</td><td>Kelas</td><td>: {{ $kelas->nama_kelas ?? '-' }}</td></tr>
+    <tr><td>NIS / NISN</td><td>: {{ $siswa->NIS }} / {{ $siswa->NISN }}</td><td>Semester</td><td>: {{ $tahunAjaran->semester }}</td></tr>
+    <tr><td>Tahun Ajaran</td><td colspan="3">: {{ $tahunAjaran->tahun_ajaran }}</td></tr>
+</table>
+
+{{-- MUQODDIMAH --}}
+<div class="section-title">Muqoddimah</div>
+<div class="arabic">{!! $muqoddimah !!}</div>
+
+{{-- NARASI PEMBUKA --}}
+<p style="margin-top: 20px;">
+    Lembar ini adalah wadah berbagi TK Islam Taruna Al Quran dan Orang tua mengenai perkembangan Ananda selama bermain dan belajar di TK Islam Taruna Al Quran selama satu semester. Orang tua dan guru dapat mendiskusikan catatan-catatan mengenai perkembangan Anak berikut ini.
+</p>
+
+{{-- HAFALAN --}}
+<div class="section-title">Hafalan Surat-surat Pendek (Tahfidz Juz 30)</div>
+<table class="table">
+    <thead><tr><th>No</th><th>Nama Surat</th><th>Nilai</th></tr></thead>
     <tbody>
         @foreach($hafalan as $i => $h)
         <tr>
             <td>{{ $i + 1 }}</td>
             <td>{{ $h->surat->nama_surat ?? '-' }}</td>
-            <td>{!! $h->nilai ?? '-' !!}</td>
+            <td>{{ $h->nilai }}</td>
         </tr>
         @endforeach
     </tbody>
 </table>
 
-<h4 class="section-title">Tarbiyah dan BTQ</h4>
+{{-- TARBIYAH DAN BTQ --}}
+<div class="section-title">Tarbiyah dan BTQ</div>
 @php $groupedTarbiyah = $tarbiyah->groupBy(fn($t) => $t->materi->indikatorTarbiyah->indikator ?? 'Lainnya'); @endphp
 @foreach($groupedTarbiyah as $indikator => $list)
-    <p style="font-weight: bold;">{{ $indikator }}</p>
-    <table>
-        <thead><tr><th>No</th><th>Indikator</th><th>Materi</th><th>Nilai</th></tr></thead>
-        <tbody>
-            @foreach($list as $i => $item)
-            <tr>
-                <td>{{ $i+1 }}</td>
-                <td>{{ $item->materi && $item->materi->indikator ? $item->materi->indikator->indikator : 'Lainnya' }}</td>
-                <td>{{ $item->materi->materi }}</td>
-                <td>{!! $item->nilai ?? '-' !!}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+<p><strong>{{ $indikator }}</strong></p>
+<table class="table">
+    <thead><tr><th>No</th><th>Indikator</th><th>Materi</th><th>Nilai</th></tr></thead>
+    <tbody>
+        @foreach($list as $i => $item)
+        <tr>
+            <td>{{ $i+1 }}</td>
+            <td>{{ $item->materi->indikator->indikator ?? '-' }}</td>
+            <td>{{ $item->materi->materi }}</td>
+            <td>{!! $item->nilai ?? '-' !!}</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
 @endforeach
 
-<h4 class="section-title">Capaian Pembelajaran</h4>
+{{-- CAPAIAN PEMBELAJARAN --}}
+<div class="section-title">Laporan Perkembangan Capaian Pembelajaran</div>
 @php $kelompokCp = $cp->groupBy(fn($c) => $c->penilaian->perkembangan->indikator); @endphp
 @foreach($kelompokCp as $indikator => $listCp)
-    <p style="font-weight: bold;">{{ $indikator }}</p>
-    <table>
-        <thead><tr><th>Capaian</th><th>Deskripsi</th><th>Foto</th></tr></thead>
-        <tbody>
-            @foreach($listCp as $c)
-            <tr>
-                <td>{{ $c->penilaian->aspek_nilai }}</td>
-                <td>{!! $c->nilai ?? '-' !!}</td>
-                <td>
-                    @if($c->foto)
-                        <img src="{{ public_path('storage/' . $c->foto) }}" class="foto-cp">
-                    @endif
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-@endforeach
-
-<h4 class="section-title">P5 (Profil Pelajar Pancasila)</h4>
-@foreach($p5 as $i => $item)
-    <p style="font-weight: bold;">{{ $item->perkembangan->indikator ?? '-' }}</p>
-    <table>
+<p><strong>{{ $indikator }}</strong></p>
+<table class="table">
+    <thead><tr><th>Capaian</th><th>Deskripsi</th><th>Foto</th></tr></thead>
+    <tbody>
+        @foreach($listCp as $c)
         <tr>
-            <td style="width: 70%">{!! $item->nilai !!}</td>
-            <td style="width: 30%">
-                @if($item->foto)
-                    <img src="{{ public_path('storage/foto_nilai_p5/' . $item->foto) }}" class="foto-p5">
+            <td>{{ $c->penilaian->aspek_nilai }}</td>
+            <td>{!! $c->nilai !!}</td>
+            <td>
+                @if($c->foto)
+                    <img src="{{ public_path('storage/' . $c->foto) }}" class="foto-cp">
                 @endif
             </td>
         </tr>
-    </table>
+        @endforeach
+    </tbody>
+</table>
 @endforeach
 
-<h4 class="section-title">Kesehatan</h4>
-<table>
-    <thead><tr><th>BB (kg)</th><th>TB (cm)</th><th>LK (cm)</th><th>Penglihatan</th><th>Pendengaran</th><th>Gigi</th></tr></thead>
-    <tbody>
-        <tr>
-            <td>{{ $kondisi->berat_badan ?? '-' }}</td>
-            <td>{{ $kondisi->tinggi_badan ?? '-' }}</td>
-            <td>{{ $kondisi->lingkar_kepala ?? '-' }}</td>
-            <td>{{ $kondisi->penglihatan ?? '-' }}</td>
-            <td>{{ $kondisi->pendengaran ?? '-' }}</td>
-            <td>{{ $kondisi->kesehatan_gigi ?? '-' }}</td>
-        </tr>
-    </tbody>
-</table>
-
-<h4 class="section-title">Absensi</h4>
-<table>
-    <thead><tr><th>Sakit</th><th>Izin</th><th>Alpa</th></tr></thead>
-    <tbody>
-        <tr>
-            <td>{{ $absensi->sakit ?? 0 }}</td>
-            <td>{{ $absensi->izin ?? 0 }}</td>
-            <td>{{ $absensi->alpa ?? 0 }}</td>
-        </tr>
-    </tbody>
-</table>
-
-<table class="signature">
+{{-- P5 --}}
+<div class="section-title">Projek Penguatan Profil Pelajar Pancasila</div>
+@foreach($p5 as $p)
+<p><strong>{{ $p->perkembangan->indikator ?? '-' }}</strong></p>
+<table class="table">
     <tr>
-        <td>Orang Tua/Wali</td>
-        <td>Guru Kelas</td>
-        <td>Kepala Sekolah</td>
-    </tr>
-    <tr><td style="height: 70px;"></td><td></td><td></td></tr>
-    <tr>
-        <td><strong>{{ $siswa->orangtua->nama_ayah ?? '-' }}</strong></td>
-        <td><strong>{{ $waliKelas->nama_guru ?? '-' }}</strong></td>
-        <td><strong>{{ $kepalaSekolah->nama_guru ?? '-' }}</strong></td>
+        <td style="width: 70%">{!! $p->nilai !!}</td>
+        <td style="width: 30%">
+            @if($p->foto)
+                <img src="{{ public_path('storage/foto_nilai_p5/' . $p->foto) }}" class="foto-p5">
+            @endif
+        </td>
     </tr>
 </table>
+@endforeach
+
+{{-- TANDA TANGAN --}}
+<div class="section-title">Tanda Tangan</div>
+<div class="ttd-section">
+    <div class="ttd-col">
+        Orang Tua / Wali
+        <div class="ttd-box">
+            ({{ $siswa->orangtua->nama_ayah ?? '..........................................' }})
+        </div>
+    </div>
+    <div class="ttd-col">
+        Sleman, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>Guru Kelas
+        <div class="ttd-box">
+            ({{ $waliKelas->guru->nama ?? '.............................' }})
+        </div>
+    </div>
+    <div class="ttd-col">
+        Kepala Sekolah
+        <div class="ttd-box">
+            (SUPARYATI, S.Pd. AUD.)
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

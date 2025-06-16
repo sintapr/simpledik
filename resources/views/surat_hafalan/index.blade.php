@@ -4,9 +4,11 @@
 @section('content')
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
+        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahSuratHafalan">
             <i class="fa fa-plus"></i> Tambah @yield('title')
         </button>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -21,7 +23,8 @@
         <div class="card-body">
             <h4>Data Surat Hafalan</h4>
 
-            <!-- Modal Tambah -->
+            {{-- Modal Tambah (hanya admin) --}}
+            @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
             <div class="modal fade" id="modalTambahSuratHafalan" tabindex="-1" aria-labelledby="modalTambahSuratHafalanLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <form action="{{ route('surat-hafalan.store') }}" method="POST">
@@ -58,6 +61,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             {{-- Form Pencarian --}}
             <form method="GET" class="row mb-3">
@@ -79,7 +83,9 @@
                         <th>ID Surat</th>
                         <th>Nama Surat</th>
                         <th>Perkembangan</th>
+                        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +94,7 @@
                             <td>{{ $item->id_surat }}</td>
                             <td>{{ $item->nama_surat }}</td>
                             <td>{{ $item->perkembangan->indikator ?? '-' }}</td>
+                            @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
                             <td>
                                 <!-- Tombol Edit -->
                                 <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEdit-{{ $item->id_surat }}">
@@ -144,23 +151,23 @@
                                     </button>
                                 </form>
                             </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Belum ada data</td>
+                            <td colspan="{{ auth('guru')->check() && auth('guru')->user()->jabatan === 'admin' ? 4 : 3 }}" class="text-center">Belum ada data</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
 
-        <p class="mt-2">
-            Menampilkan {{ $suratHafalan->count() }} dari total {{ $suratHafalan->total() }} data
-        </p>
+            <p class="mt-2">
+                Menampilkan {{ $suratHafalan->count() }} dari total {{ $suratHafalan->total() }} data
+            </p>
 
-        <div class="d-flex justify-content-center">
-            {{ $suratHafalan->appends(request()->query())->links('pagination::bootstrap-4') }}
-        </div>
-
+            <div class="d-flex justify-content-center">
+                {{ $suratHafalan->appends(request()->query())->links('pagination::bootstrap-4') }}
+            </div>
         </div>
     </div>
 </div>

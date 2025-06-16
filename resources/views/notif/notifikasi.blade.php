@@ -1,4 +1,4 @@
-@php
+@php 
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Str;
 
@@ -12,20 +12,18 @@
         $nis = $user->NIS ?? null;
     } elseif (Auth::guard('guru')->check()) {
         $user = Auth::guard('guru')->user();
-        $role = strtolower($user->jabatan); // misal: admin, wali_kelas
-    } else {
-        $role = null;
+        $role = strtolower($user->jabatan); // admin, wali_kelas, dll
     }
 
     if ($role) {
         $notifikasi = \App\Models\Notifikasi::where('untuk_role', $role)
             ->when($nis, function($query) use ($nis) {
                 $query->where(function($q) use ($nis) {
-                    $q->whereNull('NIS')
-                      ->orWhere('NIS', $nis);
+                    $q->whereNull('NIS')->orWhere('NIS', $nis);
                 });
             })
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
+            ->take(5)
             ->get();
 
         $unreadCount = $notifikasi->where('dibaca', false)->count();
@@ -35,8 +33,8 @@
     }
 @endphp
 
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+<li class="nav-item position-relative" id="customNotif">
+    <a class="nav-link position-relative" href="#" onclick="toggleNotifDropdown(event)">
         <i class="bi bi-bell"></i>
         @if($unreadCount > 0)
             <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
@@ -44,44 +42,49 @@
             </span>
         @endif
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" style="width: 300px;">
-        @if($notifikasi->isEmpty())
-            <li class="dropdown-item text-center text-muted">Tidak ada notifikasi</li>
-        @else
-            @foreach($notifikasi as $notif)
-                <li class="dropdown-item {{ $notif->dibaca ? '' : 'fw-bold' }}">
-                    <div>
-                        <strong>{{ $notif->judul }}</strong><br>
-                        <small>{{ Str::limit($notif->pesan, 60) }}</small><br>
-                        <small class="text-muted">{{ $notif->created_at->diffForHumans() }}</small>
+
+    <div id="notifDropdown" class="custom-dropdown shadow">
+        @forelse($notifikasi as $notif)
+            @php
+                $isMingguan = str_contains(strtolower($notif->judul), 'mingguan');
+                $icon = $isMingguan ? 'calendar-week' : 'file-earmark-text';
+                $iconColor = $isMingguan ? 'text-success' : 'text-primary';
+            @endphp
+
+            <div class="notif-item {{ $notif->dibaca ? '' : 'fw-bold bg-light' }}">
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-{{ $icon }} me-2 fs-4 {{ $iconColor }}"></i>
+                    <div class="flex-grow-1">
+                        <div class="notif-title mb-1">{{ $notif->judul }}</div>
+                        <div class="notif-body text-muted small">{{ Str::limit($notif->pesan, 90) }}</div>
+                        <div class="notif-time text-muted fst-italic small mt-1">{{ $notif->created_at->diffForHumans() }}</div>
                     </div>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-            @endforeach
-        @endif
-    </ul>
+                </div>
+            </div>
+            @if(!$loop->last)
+                <hr class="my-2">
+            @endif
+        @empty
+            <div class="text-muted text-center small py-2">Tidak ada notifikasi</div>
+        @endforelse
+    </div>
 </li>
 
-@section('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.mark-as-read').forEach(function(item) {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                let notifId = this.dataset.id;
+function toggleNotifDropdown(event) {
+    event.preventDefault();
+    const dropdown = document.getElementById('notifDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
 
-                fetch(`/notifikasi/${notifId}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                }).then(() => {
-                    location.reload();
-                });
-            });
-        });
+    document.addEventListener('click', function handler(e) {
+        if (!document.getElementById('customNotif').contains(e.target)) {
+            dropdown.style.display = 'none';
+            document.removeEventListener('click', handler);
+        }
     });
+}
 </script>
-@endsection
+
+
+
 

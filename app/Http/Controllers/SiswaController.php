@@ -32,6 +32,11 @@ class SiswaController extends Controller
     // Simpan data siswa baru
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'NIS' => 'required|string|max:8|unique:siswa,NIS',
             'NISN' => 'nullable|string|max:12',
@@ -80,8 +85,8 @@ class SiswaController extends Controller
         // Ambil data siswa beserta relasi yang dibutuhkan
         $siswa = Siswa::with([
             'orangtua',
-            'anggota_kelas.waliKelas.guru',
-            'anggota_kelas.waliKelas.kelas',
+            'anggotaKelas.waliKelas.guru',
+            'anggotaKelas.waliKelas.kelas',
         ])->findOrFail($NIS);
 
         return view('siswa.show', compact('siswa'));
@@ -91,6 +96,11 @@ class SiswaController extends Controller
     // Form edit siswa
     public function edit($NIS)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $siswa = Siswa::findOrFail($NIS);
         return view('siswa.form', compact('siswa'));
     }
@@ -98,6 +108,11 @@ class SiswaController extends Controller
     // Update data siswa
     public function update(Request $request, $NIS)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $siswa = Siswa::findOrFail($NIS);
 
         $request->validate([
@@ -132,6 +147,10 @@ class SiswaController extends Controller
     // Hapus data siswa
     public function destroy($NIS)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         $siswa = Siswa::findOrFail($NIS);
 
         if ($siswa->foto) {

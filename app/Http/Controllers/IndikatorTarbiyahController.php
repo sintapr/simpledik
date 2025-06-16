@@ -34,6 +34,11 @@ class IndikatorTarbiyahController extends Controller
     
     public function edit($id_indikator)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $indikator = IndikatorTarbiyah::findOrFail($id_indikator);  // Ambil data berdasarkan ID
         $perkembangan = Perkembangan::all();  // Ambil semua data perkembangan
         return view('indikator.form', compact('indikator', 'perkembangan'));
@@ -41,6 +46,11 @@ class IndikatorTarbiyahController extends Controller
     
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'indikator' => 'required',
             'id_perkembangan' => 'required|exists:perkembangan,id_perkembangan',
@@ -82,6 +92,10 @@ class IndikatorTarbiyahController extends Controller
     
     public function update(Request $request, $id_indikator)
 {
+    if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
     $indikator = IndikatorTarbiyah::findOrFail($id_indikator);
 
     $request->validate([
@@ -104,6 +118,10 @@ class IndikatorTarbiyahController extends Controller
 
     public function destroy($id_indikator)
 {
+     if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+
     $indikator = IndikatorTarbiyah::findOrFail($id_indikator); // $id adalah id_indikator
     $indikator->delete();
 

@@ -49,9 +49,9 @@ class Siswa extends Authenticatable
         return $this->hasOne(Orangtua::class, 'NIS', 'NIS');
     }
 
-    public function anggota_kelas()
+    public function anggotaKelas()
     {
-        return $this->hasMany(AnggotaKelas::class, 'NIS', 'NIS');
+        return $this->hasOne(AnggotaKelas::class, 'NIS', 'NIS');
     }
     public function absensi()
     {

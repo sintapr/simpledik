@@ -120,8 +120,8 @@ Route::prefix('laporan-assesment')->name('laporan-assesment.')->group(function (
     Route::get('/assesment/{nis}/{id_tp}/{id_ta}', [LaporanAssesmentController::class, 'showDetail'])->name('showDetail');
 
     // Ubah nama route agar unik
-    Route::get('/cetak/{nis}/{id_kelas}/{id_ta}', [LaporanAssesmentController::class, 'cetakPdf'])->name('cetak');
-    Route::get('/cetak/{nis}/{id_kelas}/{id_ta}/{minggu}', [LaporanAssesmentController::class, 'cetakPdfMinggu'])->name('cetak.mingguan');
+    Route::get('/cetak/{nis}/{id_kelas}/{id_ta}/{minggu}', [LaporanAssesmentController::class, 'cetakPdf'])->name('cetak');
+    // Route::get('/cetak/{nis}/{id_kelas}/{id_ta}/{minggu}', [LaporanAssesmentController::class, 'cetakPdfMinggu'])->name('cetak.mingguan');
 
     Route::get('/notify/{nis}/{id_ta}/{id_kelas}/{minggu}', [LaporanAssesmentController::class, 'showNotifyForm'])->name('edit');
     Route::post('/notify/{nis}/{id_ta}/{id_kelas}/{minggu}', [LaporanAssesmentController::class, 'sendNotification'])->name('laporan.notify');
@@ -186,12 +186,15 @@ use App\Http\Controllers\NotifikasiController;
 // Route::post('/laporan-semester/notify/{nis}/{id_ta}', [NotifikasiController::class, 'kirimPerSiswa'])
 //     ->name('laporan-semester.laporan.notify');
 
+// Notifikasi
 Route::middleware(['auth'])->group(function() {
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'markAsRead'])->name('notifikasi.read');
-    // Route::get('/notifikasi/{id}/buka', [NotifikasiController::class, 'buka'])->name('notifikasi.buka');
-
+    Route::post('/notifikasi/read-all', [NotifikasiController::class, 'markAllAsRead'])->name('notifikasi.readAll');
 });
+
+
+
 
 
 

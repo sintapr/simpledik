@@ -7,10 +7,10 @@
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    @if($role == 'orangtua')
+                    @if($role == 'ortu')
                         <h3 class="text-success fw-bold mb-2">
                             <i class="fas fa-heart text-danger me-2"></i>
-                            Selamat datang, {{ $user->nama_ayah ?? $user->nama_ibu ?? 'Orangtua' }}
+                            Selamat datang, {{ $user->nama_ayah ?? $user->nama_ibu ?? 'ortu' }}
                         </h3>
                         <p class="mb-1"><i class="fas fa-child text-primary me-2"></i>Anak anda: <strong>{{ $user->siswa->nama_siswa ?? '-' }}</strong></p>
                     @elseif ($role === 'siswa')
@@ -45,8 +45,8 @@
         </div>
     </div>
 
-    @if($role === 'orangtua')
-        {{-- Orangtua Section --}}
+    @if(in_array($role, ['siswa', 'ortu']))        
+    {{-- Orangtua Section --}}
         <div class="row g-4">
             {{-- Informasi Sekolah --}}
             <div class="col-lg-8">
@@ -70,8 +70,8 @@
                         <h6 class="fw-bold text-success mb-3">
                             <i class="fas fa-chart-pie me-2"></i>Progress Belajar
                         </h6>
-                        <div class="chart-container">
-                            <canvas id="progressChart"></canvas>
+                        <div class="chart-container" style="height: 220px;">
+                                <canvas id="progressChart"></canvas>
                         </div>
                         <div class="mt-3">
                             <div class="d-flex justify-content-between mb-2">
@@ -89,46 +89,51 @@
         </div>
 
         {{-- Info Cards untuk Orangtua --}}
-        <div class="row g-4 mb-4">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm card-hover gradient-green-1 text-white stat-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">Informasi Anak</h6>
-                                <h5 class="fw-bold mb-1">{{ $user->siswa->nama_siswa ?? '-' }}</h5>
-                                <p class="mb-1"><small>NIS: {{ $user->siswa->NIS ?? $user->NIS ?? '-' }}</small></p>
-                                <p class="mb-1"><small>Kelas: {{ optional($user->siswa)->kelas->nama_kelas ?? 'Belum terdaftar' }}</small></p>
-                                <p class="mb-0"><small>{{ $tahun_ajaran->tahun_aktif ?? '-' }}</small></p>
-                            </div>
-                            <div class="text-end">
-                                <i class="fas fa-user-graduate fa-3x opacity-75"></i>
-                            </div>
-                        </div>
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm card-hover gradient-green-1 text-white stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-2 opacity-75">Informasi Anak</h6>
+                        <h5 class="fw-bold mb-1">{{ $user->siswa->nama_siswa ?? '-' }}</h5>
+                        <p class="mb-1"><small>NIS: {{ $user->siswa->NIS ?? $user->NIS ?? '-' }}</small></p>
+                        <p class="mb-1">
+                            <small>
+                                Kelas: {{ optional(optional($user->siswa)->anggotaKelas)->waliKelas->kelas->nama_kelas ?? 'Belum terdaftar' }}
+                            </small>
+                        </p>
+                        <p class="mb-0"><small>{{ $tahun_ajaran->tahun_aktif ?? '-' }}</small></p>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm card-hover gradient-green-2 text-white stat-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-2 opacity-75">Wali Kelas</h6>
-                                <h5 class="fw-bold mb-1">{{ optional(optional($user->siswa)->kelas)->waliKelas->nama_guru ?? '-' }}</h5>
-                                <p class="mb-0">
-                                    <i class="fas fa-phone me-2"></i>
-                                    <small>{{ optional(optional($user->siswa)->kelas)->waliKelas->no_hp ?? '-' }}</small>
-                                </p>
-                            </div>
-                            <div class="text-end">
-                                <i class="fas fa-chalkboard-teacher fa-3x opacity-75"></i>
-                            </div>
-                        </div>
+                    <div class="text-end">
+                        <i class="fas fa-user-graduate fa-3x opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm card-hover gradient-green-2 text-white stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-2 opacity-75">Wali Kelas</h6>
+                        <h5 class="fw-bold mb-1">{{ optional(optional($user->siswa)->anggotaKelas)->waliKelas->guru->nama_guru ?? '-' }}</h5>
+                        <p class="mb-0">
+                            <i class="fas fa-phone me-2"></i>
+                            <small>{{ optional(optional($user->siswa)->anggotaKelas)->waliKelas->guru->no_hp ?? '-' }}</small>
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <i class="fas fa-chalkboard-teacher fa-3x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     @else
         {{-- Dashboard Admin, Wali, Kepala Sekolah --}}
@@ -140,7 +145,7 @@
                             <div>
                                 <h6 class="mb-2 opacity-75">Total Siswa</h6>
                                 <h2 class="fw-bold mb-1">{{ $jumlahSiswa }}</h2>
-                                <small class="opacity-75">{{ $tahun_ajaran->tahun_aktif ?? 'Tahun Aktif' }}</small>
+                                <small class="opacity-75">Aktif</small>
                             </div>
                             <div class="text-end">
                                 <i class="fa fa-users fa-3x opacity-75"></i>
@@ -274,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const jamEl = document.getElementById('jam');
             
             if (tanggalEl) {
-                tanggalEl.innerText = now.toLocaleDateString('id-ID', optionsTanggul);
+                tanggalEl.innerText = now.toLocaleDateString('id-ID', optionsTanggal);
             }
             if (jamEl) {
                 jamEl.innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -287,8 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateClock, 1000);
     updateClock();
 
-    @if($role === 'orangtua')
-        // Progress Chart for Parents
+@if(in_array($role, ['siswa', 'orangtua']))        // Progress Chart for Parents
         const progressCtx = document.getElementById('progressChart');
         if (progressCtx) {
             try {

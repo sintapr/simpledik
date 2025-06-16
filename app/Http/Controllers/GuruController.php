@@ -34,6 +34,11 @@ class GuruController extends Controller
 
     public function store(Request $request)
     {
+        // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'NIP' => 'required|string|max:12|unique:guru,NIP',
             'nama_guru' => 'required|string|max:155',
@@ -66,6 +71,11 @@ class GuruController extends Controller
 
     public function edit($NIP)
     {
+         // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $guru = Guru::findOrFail($NIP);
         return view('guru.form', compact('guru'));
     }
@@ -78,6 +88,10 @@ class GuruController extends Controller
 
     public function update(Request $request, $NIP)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $request->validate([
             'nama_guru' => 'required|string|max:155',
             'jabatan' => 'required|in:kepala_sekolah,wali_kelas,admin',
@@ -112,6 +126,10 @@ class GuruController extends Controller
 
     public function destroy($NIP)
     {
+        
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
         $guru = Guru::findOrFail($NIP);
 
         if ($guru->foto) {

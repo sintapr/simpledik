@@ -35,7 +35,7 @@
                         value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-secondary" type="submit"><i class="fa fa-search"></i> Cari</button>
+                    <button class="btn btn-primary w-100" type="submit"><i class="fa fa-search"></i> Cari</button>
                 </div>
             </form>
 
@@ -63,12 +63,12 @@
         @endif
     </td>
     <td>
-        <span class="badge {{ $item['status'] ? 'bg-success' : 'bg-secondary' }} text-white">
+        <span class="badge {{ $item['status'] ? 'bg-success' : 'bg-danger' }} text-white">
             {{ $item['status'] ? 'Aktif' : 'Tidak Aktif' }}
         </span>
     </td>
     <td>
-        <a href="{{ route('laporan-semester.detail', ['id_kelas' => $item['kelas']->id_kelas, 'id_ta' => $item['id_ta']]) }}" class="btn btn-sm btn-info">
+        <a href="{{ route('laporan-semester.detail', ['id_kelas' => $item['kelas']->id_kelas, 'id_ta' => $item['id_ta']]) }}" class="btn btn-primary btn-info">
             <i class="fa fa-eye"></i> Detail
         </a>
     </td>
@@ -83,6 +83,7 @@
            <p class="mt-2">
     Menampilkan {{ count($kelasList) }} data
 </p>
+
 
         </div>
     </div>

@@ -5,10 +5,12 @@
 @section('content')
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
-        <!-- Tombol Tambah -->
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahSiswa">
-        <i class="fa fa-plus"></i> Tambah @yield('title')
-    </button>
+        {{-- Tombol Tambah hanya untuk admin --}}
+        @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahSiswa">
+            <i class="fa fa-plus"></i> Tambah @yield('title')
+        </button>
+        @endif
     </div>
 
     <div class="col-auto">
@@ -31,14 +33,14 @@
                         value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2">
-                    <!-- Tombol Cari -->
                     <button class="btn btn-primary w-100" type="submit">
                         <i class="fa fa-search"></i> Cari
                     </button>
                 </div>
             </form>
 
-            {{-- Modal Tambah --}}
+            {{-- Modal Tambah (hanya admin) --}}
+            @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
             <div class="modal fade" id="modalTambahSiswa" tabindex="-1">
                 <div class="modal-dialog">
                     <form action="{{ route('siswa.store') }}" method="POST" enctype="multipart/form-data">
@@ -47,6 +49,7 @@
                     </form>
                 </div>
             </div>
+            @endif
 
             {{-- Tabel --}}
             <div class="table-responsive">
@@ -60,8 +63,9 @@
                             <th>Tempat Lahir</th>
                             <th>Tgl Lahir</th>
                             <th>Foto</th>
-                            {{-- <th>Status</th> --}}
+                            @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
                             <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -80,39 +84,42 @@
                                         <span class="text-muted">Tidak ada</span>
                                     @endif
                                 </td>
+
+                                @if(auth('guru')->check() && auth('guru')->user()->jabatan === 'admin')
                                 <td class="text-center">
-                                {{-- Tombol Lihat Detail --}}
-                                <a href="{{ route('siswa.show', $item->NIS) }}" class="btn btn-success btn-sm" title="Lihat Detail">
-                                    <i class="fa fa-eye"></i>
-                                </a>
+                                    {{-- Lihat --}}
+                                    <a href="{{ route('siswa.show', $item->NIS) }}" class="btn btn-success btn-sm" title="Lihat Detail">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
 
-                                {{-- Tombol Edit --}}
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditSiswa-{{ $item->NIS }}" title="Edit Siswa">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-
-                                {{-- Modal Edit --}}
-                                <div class="modal fade" id="modalEditSiswa-{{ $item->NIS }}" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <form action="{{ route('siswa.update', $item->NIS) }}" method="POST" enctype="multipart/form-data">
-                                            @csrf @method('PUT')
-                                            @include('siswa.form', ['siswa' => $item])
-                                        </form>
-                                    </div>
-                                </div>
-
-                                {{-- Hapus --}}
-                                <form action="{{ route('siswa.destroy', $item->NIS) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Hapus Siswa">
-                                        <i class="fa fa-trash"></i>
+                                    {{-- Edit --}}
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditSiswa-{{ $item->NIS }}" title="Edit Siswa">
+                                        <i class="fa fa-edit"></i>
                                     </button>
-                                </form>
-                            </td>
+
+                                    {{-- Modal Edit --}}
+                                    <div class="modal fade" id="modalEditSiswa-{{ $item->NIS }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <form action="{{ route('siswa.update', $item->NIS) }}" method="POST" enctype="multipart/form-data">
+                                                @csrf @method('PUT')
+                                                @include('siswa.form', ['siswa' => $item])
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    {{-- Hapus --}}
+                                    <form action="{{ route('siswa.destroy', $item->NIS) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus data ini?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Hapus Siswa">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="text-center text-muted">Belum ada data siswa.</td>
+                                <td colspan="{{ auth('guru')->check() && auth('guru')->user()->jabatan === 'admin' ? 8 : 7 }}" class="text-center text-muted">Belum ada data siswa.</td>
                             </tr>
                         @endforelse
                     </tbody>

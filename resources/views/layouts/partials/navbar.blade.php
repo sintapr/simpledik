@@ -57,10 +57,12 @@
 
         <div class="header-right d-flex align-items-center">
             <ul class="d-flex align-items-center list-inline mb-0">
-                {{-- Notifikasi --}}
-                <li class="icons dropdown">
-                    @include('notif.notifikasi')
-                </li>
+                <!-- Notifikasi -->
+                @if ($role === 'ortu')
+                    <li class="icons dropdown">
+                        @include('notif.notifikasi')
+                    </li>
+                @endif
 
                 {{-- User Profile --}}
                 <li class="icons dropdown ms-3">

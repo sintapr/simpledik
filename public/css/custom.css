@@ -387,3 +387,63 @@ body::after {
         }
     }
 
+.custom-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 12px;
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.custom-dropdown .notif-item {
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.custom-dropdown .notif-item:hover {
+    background: #f8f9fa;
+}
+
+.notif-item {
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: background 0.2s;
+}
+
+.notif-item:hover {
+    background: #f8f9fa;
+}
+
+.notif-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.notif-body {
+    font-size: 13px;
+}
+
+.notif-time {
+    font-size: 12px;
+}
+
+.chart-container {
+    position: relative;
+    height: 200px; /* atau 250px */
+}
+
+
+
+

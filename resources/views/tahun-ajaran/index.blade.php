@@ -3,11 +3,17 @@
 @section('title', 'Tahun Ajaran')
 
 @section('content')
+@php
+    $userRole = session('role');
+@endphp
+
 <div class="row page-titles mx-0 align-items-center justify-content-between">
     <div class="col-auto">
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahTA">
-            <i class="fa fa-plus"></i> Tambah @yield('title')
-        </button>
+        @if ($userRole !== 'kepala_sekolah')
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalTambahTA">
+                <i class="fa fa-plus"></i> Tambah @yield('title')
+            </button>
+        @endif
     </div>
     <div class="col-auto">
         <ol class="breadcrumb mb-0">
@@ -43,7 +49,9 @@
                         <th>Semester</th>
                         <th>Tahun Ajaran</th>
                         <th>Status</th>
+                        @if(session('role') !== 'kepala_sekolah')
                         <th>Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -53,36 +61,43 @@
                         <td>{{ $item->semester }}</td>
                         <td>{{ $item->tahun_ajaran }}</td>
                         <td>
-                            <span class="badge {{ $item->status ? 'bg-success' : 'bg-secondary' }} text-white">
+                            <span class="badge {{ $item->status ? 'bg-success' : 'bg-danger' }} text-white">
                                 {{ $item->status ? 'Aktif' : 'Tidak Aktif' }}
                             </span>
                         </td>
-                        <td>
-                            {{-- Tombol Edit --}}
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditTA-{{ $item->id_ta }}">
-                                <i class="fa fa-edit"></i>
-                            </button>
 
-                            {{-- Tombol Hapus --}}
-                            <form action="{{ route('tahun-ajaran.destroy', $item->id_ta) }}" method="POST" class="d-inline"
-                                onsubmit="return confirm('Hapus data ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
-                            </form>
+                        <td>
+                            @if ($userRole !== 'kepala_sekolah')
+                                {{-- Tombol Edit --}}
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditTA-{{ $item->id_ta }}">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+
+                                {{-- Tombol Hapus --}}
+                                <form action="{{ route('tahun-ajaran.destroy', $item->id_ta) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('Hapus data ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                </form>
+                            @else
+                                <span class="text-muted">Hanya melihat</span>
+                            @endif
                         </td>
                     </tr>
 
                     {{-- Modal Edit --}}
-                    <div class="modal fade" id="modalEditTA-{{ $item->id_ta }}" tabindex="-1">
-                        <div class="modal-dialog">
-                            <form action="{{ route('tahun-ajaran.update', $item->id_ta) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                @include('tahun-ajaran.form', ['tahunAjaran' => $item])
-                            </form>
+                    @if ($userRole !== 'kepala_sekolah')
+                        <div class="modal fade" id="modalEditTA-{{ $item->id_ta }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <form action="{{ route('tahun-ajaran.update', $item->id_ta) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    @include('tahun-ajaran.form', ['tahunAjaran' => $item])
+                                </form>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                     @empty
                     <tr>
                         <td colspan="5" class="text-center">Data Tahun Ajaran belum tersedia.</td>
@@ -105,12 +120,14 @@
 </div>
 
 {{-- Modal Tambah --}}
-<div class="modal fade" id="modalTambahTA" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('tahun-ajaran.store') }}" method="POST">
-            @csrf
-            @include('tahun-ajaran.form', ['tahunAjaran' => new \App\Models\TahunAjaran(), 'nextId' => $nextId])
-        </form>
+@if ($userRole !== 'kepala_sekolah')
+    <div class="modal fade" id="modalTambahTA" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="{{ route('tahun-ajaran.store') }}" method="POST">
+                @csrf
+                @include('tahun-ajaran.form', ['tahunAjaran' => new \App\Models\TahunAjaran(), 'nextId' => $nextId])
+            </form>
+        </div>
     </div>
-</div>
+@endif
 @endsection

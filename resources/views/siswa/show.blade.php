@@ -85,7 +85,7 @@
             <hr>
             <h5 class="mt-4 mb-3">Data Wali Kelas & Kelas</h5>
             @php
-                $anggota = $siswa->anggota_kelas->first();
+                $anggota = $siswa->anggotaKelas->first();
                 $wali = $anggota->waliKelas ?? null;
             @endphp
 

@@ -58,6 +58,11 @@ class WaliKelasController extends Controller
 
     public function store(Request $request)
     {
+         // Cek peran pengguna
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menambah data.');
+        }
+
         $request->validate([
             'id_wakel' => 'required|unique:wali_kelas,id_wakel',
             'NIP' => 'required|exists:guru,NIP',
@@ -71,6 +76,11 @@ class WaliKelasController extends Controller
 
     public function edit($id)
     {
+        // Opsional: jika edit tidak digunakan langsung (karena di modal), bisa dihapus
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $waliKelas = WaliKelas::findOrFail($id);
         $guru = Guru::all();
         $kelas = Kelas::all();
@@ -89,6 +99,10 @@ class WaliKelasController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan mengedit data.');
+        }
+
         $request->validate([
             'NIP' => 'required|exists:guru,NIP',
             'id_ta' => 'required|exists:tahun_ajaran,id_ta',
@@ -103,6 +117,10 @@ class WaliKelasController extends Controller
 
     public function destroy($id)
     {
+        if (session('role') === 'kepala_sekolah') {
+            abort(403, 'Kepala sekolah tidak diizinkan menghapus data.');
+        }
+        
         WaliKelas::destroy($id);
         return redirect()->route('wali_kelas.index')->with('success', 'Data berhasil dihapus.');
     }

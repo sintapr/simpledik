@@ -144,7 +144,7 @@ public function index(Request $request)
     // Query MonitoringSemester berdasarkan nis dan id_ta saja
     $rapor = MonitoringSemester::with([
         'detailNilaiHafalan.surat',
-        'detailNilaiTarbiyah.materi',
+        'detailNilaiTarbiyah.materi.indikator',
         'detailNilaiCp.penilaian.perkembangan',
         'detailNilaiP5.perkembangan',
         'kelas',    // kalau perlu relasi kelas
@@ -302,22 +302,26 @@ public function edit($nis, $id_ta)
 
 public function notify(Request $request, $nis, $id_ta, $id_kelas)
 {
+    // Ambil user dari guard 'guru'
+    $user = Auth::guard('guru')->user();
 
-        $user = Auth::user();
-
-    if (!in_array($user->jabatan, ['admin', 'wali_kelas'])) {
+    // Cek apakah user login dan memiliki jabatan yang diizinkan
+    if (!$user || !in_array(strtolower($user->jabatan), ['admin', 'wali_kelas'])) {
         abort(403, 'Anda tidak memiliki izin untuk mengirim notifikasi.');
     }
 
+    // Validasi input form
     $request->validate([
         'pesan' => 'required|string',
     ]);
 
-    // Validasi apakah NIS benar-benar ada
-    if (!DB::table('siswa')->where('NIS', $nis)->exists()) {
+    // Pastikan NIS siswa benar-benar ada
+    $siswaExists = DB::table('siswa')->where('NIS', $nis)->exists();
+    if (!$siswaExists) {
         return back()->with('error', 'Siswa tidak ditemukan.');
     }
 
+    // Simpan notifikasi ke tabel
     DB::table('notifikasi')->insert([
         'judul' => 'Notifikasi Rapor Semester',
         'pesan' => $request->pesan,
@@ -328,8 +332,11 @@ public function notify(Request $request, $nis, $id_ta, $id_kelas)
         'updated_at' => now(),
     ]);
 
-    return redirect()->route('laporan-semester.rapor', ['id_kelas' => $id_kelas, 'id_ta' => $id_ta])
-        ->with('success', 'Notifikasi berhasil dikirim ke orangtua.');
+    // Redirect kembali ke halaman laporan semester
+    return redirect()->route('laporan-semester.rapor', [
+        'id_kelas' => $id_kelas,
+        'id_ta' => $id_ta
+    ])->with('success', 'Notifikasi berhasil dikirim ke orangtua.');
 }
 
 
